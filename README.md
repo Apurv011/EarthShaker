@@ -1,4 +1,4 @@
-# earth_quake
+# EarthShaker
 
 A new Flutter application.
 
