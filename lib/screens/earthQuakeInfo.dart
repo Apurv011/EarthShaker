@@ -1,6 +1,6 @@
+import 'package:earth_quake/widgets/earthQuakeInfoTile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:earth_quake/model/earthQuakeInfoTile.dart';
 
 class EarthQuakeInfoPage extends StatelessWidget {
   @override

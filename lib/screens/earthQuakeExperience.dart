@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earth_quake/widgets/experienceBubble.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:earth_quake/model/experienceBubble.dart';
 
 class EarthQuakeExperience extends StatefulWidget {
   @override

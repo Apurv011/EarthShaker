@@ -1,4 +1,4 @@
-import 'package:earth_quake/view/earthQuakeExperience.dart';
+import 'package:earth_quake/screens/earthQuakeExperience.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:earth_quake/controller/bottomSheetController.dart';

@@ -1,7 +1,7 @@
-import 'package:earth_quake/view/earthQuakeInfo.dart';
+import 'package:earth_quake/screens/earthQuakeInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'earthQuakeData.dart';
+import '../earthQuakeData.dart';
 
 class EarthQuakeTile extends StatelessWidget {
   EarthQuakeTile({this.earthQuakeData, this.urlID});

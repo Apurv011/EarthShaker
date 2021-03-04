@@ -1,6 +1,6 @@
+import 'package:earth_quake/screens/earth_quakes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'view/earth_quakes.dart';
 import 'package:get/get.dart';
 
 void main() async {

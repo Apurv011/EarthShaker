@@ -1,9 +1,9 @@
-import 'package:earth_quake/model/earthQuakeTile.dart';
+import 'package:earth_quake/widgets/earthQuakeTile.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../earthQuakeData.dart';
 import '../networking.dart';
-import '../model/earthQuakeData.dart';
 
 final int limit = 150;
 
