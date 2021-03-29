@@ -5,6 +5,8 @@ class EarthQuakeData {
   String dayDate;
   String time;
   String id;
+  double lon;
+  double lat;
 
   EarthQuakeData(
       {this.location,
@@ -12,5 +14,7 @@ class EarthQuakeData {
       this.magnitude,
       this.dayDate,
       this.time,
+      this.lon,
+      this.lat,
       this.id});
 }

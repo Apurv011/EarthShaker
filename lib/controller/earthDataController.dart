@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../earthQuakeData.dart';
 import '../networking.dart';
+import 'package:flutter_config/flutter_config.dart';
 
-final int limit = 150;
-
-final fixedUrl =
-    'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=3&limit=$limit';
+final fixedUrl = FlutterConfig.get('SERVER_URL');
 
 class EarthQuakeDataController extends GetxController {
   var earthQuakeTiles = List<Widget>().obs;
@@ -20,6 +18,8 @@ class EarthQuakeDataController extends GetxController {
   var time = "Time".obs;
   var showSpinner = true.obs;
   var id = "".obs;
+  var lat = 0.0.obs;
+  var lon = 0.0.obs;
 
   @override
   void onInit() {
@@ -30,13 +30,16 @@ class EarthQuakeDataController extends GetxController {
   Future<void> updateUI() async {
     NetworkHelper networkHelper = NetworkHelper();
     var data = await networkHelper.getData(fixedUrl);
-    for (var i = 0; i < limit; i++) {
+    for (var i = 0; i < data['features'].length; i++) {
       id.value = data['features'][i]['id'];
 
       var mag = data['features'][i]['properties']['mag'];
       magnitude.value = mag.toString();
 
       url.value = data['features'][i]['properties']['url'];
+
+      lon.value = data['features'][i]['geometry']['coordinates'][0];
+      lat.value = data['features'][i]['geometry']['coordinates'][1];
 
       DateTime date = new DateTime.fromMillisecondsSinceEpoch(
           data['features'][i]['properties']['time']);
@@ -65,6 +68,8 @@ class EarthQuakeDataController extends GetxController {
               magnitude: magnitude.value,
               dayDate: dayDate.value,
               time: time.value,
+              lon: lon.value,
+              lat: lat.value,
               id: id.value),
           urlID: url.value,
         ),

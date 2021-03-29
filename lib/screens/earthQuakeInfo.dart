@@ -23,7 +23,9 @@ class EarthQuakeInfoPage extends StatelessWidget {
           dayDate: Get.arguments[4],
           time: Get.arguments[5],
           urlUSGS: Get.arguments[6],
-          id: Get.arguments[7]),
+          id: Get.arguments[7],
+          lon: Get.arguments[8],
+          lat: Get.arguments[9]),
     );
   }
 }

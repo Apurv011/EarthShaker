@@ -27,7 +27,9 @@ class EarthQuakeTile extends StatelessWidget {
               earthQuakeData.dayDate,
               earthQuakeData.time,
               urlID,
-              earthQuakeData.id
+              earthQuakeData.id,
+              earthQuakeData.lon,
+              earthQuakeData.lat
             ]);
           },
           leading: CircleAvatar(

@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:earth_quake/controller/bottomSheetController.dart';
 import 'package:get/get.dart';
 
+import 'locationPage.dart';
+
 class EarthQuakeInfoTile extends StatelessWidget {
   EarthQuakeInfoTile(
       {this.magColour,
@@ -13,7 +15,9 @@ class EarthQuakeInfoTile extends StatelessWidget {
       this.dayDate,
       this.time,
       this.urlUSGS,
-      this.id});
+      this.id,
+      this.lon,
+      this.lat});
 
   final Color magColour;
   final String magnitude;
@@ -23,6 +27,8 @@ class EarthQuakeInfoTile extends StatelessWidget {
   final String time;
   final String urlUSGS;
   final String id;
+  final double lon;
+  final double lat;
 
   String name = '';
   String exp = '';
@@ -139,6 +145,35 @@ class EarthQuakeInfoTile extends StatelessWidget {
               time,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black54, fontSize: 20.0),
+            ),
+            SizedBox(
+              height: 40.0,
+              width: 200.0,
+              child: Divider(
+                color: Colors.grey,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  color: magColour,
+                  size: 25.0,
+                ),
+                SizedBox(
+                  width: 5.0,
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Get.to(LocationPage(), arguments: [lon, lat]);
+                  },
+                  child: Text(
+                    "View Location",
+                    style: TextStyle(fontSize: 20.0, color: magColour),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 40.0,
