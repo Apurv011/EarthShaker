@@ -1,60 +1,78 @@
-import 'package:earth_quake/controller/firestoreController.dart';
+import 'package:earth_quake/controller/serverDataController.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
 
 class BottomSheetController {
   void openBottomSheet(
-      {String name,
-      String exp,
-      String id,
+      {String earthQuakeId,
+      String userName,
+      String userId,
+      String experience,
+      String link,
       String location,
       String dayDate,
       String time,
-      String magColour}) {
+      Color magColor,
+      String locDes,
+      double lat,
+      double lon,
+      String mag}) {
     Get.bottomSheet(
       Container(
         height: 900.0,
         color: Colors.white,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FlatButton(
+            TextButton(
               onPressed: () {
-                FireStoreController().addExperience(name, exp, id);
-                FireStoreController()
-                    .addToSaved(name, exp, location, dayDate, time, magColour);
+                ServerDataController().addExperience(
+                    url: FlutterConfig.get('MY_SERVER_URL') + 'experiences',
+                    earthQuakeId: earthQuakeId,
+                    userName: userName,
+                    userId: userId,
+                    experience: experience,
+                    link: link,
+                    location: location,
+                    dayDate: dayDate,
+                    time: time,
+                    magColor: magColor,
+                    locDes: locDes,
+                    mag: mag,
+                    lat: lat,
+                    lon: lon);
+                // ServerDataController()
+                //     .addToSaved(name, exp, location, dayDate, time, magColour);
               },
-              padding: EdgeInsets.only(right: 350.0),
               child: Text(
                 "Done",
-                style: TextStyle(
-                  color: Colors.green,
-                ),
+                style: TextStyle(color: Colors.green, fontSize: 18.0),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: TextField(
-                onChanged: (nameTyped) {
-                  name = nameTyped;
-                },
-                decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black38),
-                    ),
-                    labelText: "Name",
-                    hintText: 'Enter your name here'),
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                userName,
+                style: TextStyle(color: Colors.black, fontSize: 15.0),
               ),
             ),
+            Divider(
+              thickness: 1.0,
+              color: Colors.black38,
+              indent: 10.0,
+              endIndent: 10.0,
+            ),
             SizedBox(
-              height: 20.0,
+              height: 15.0,
             ),
             Expanded(
               flex: 2,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: TextField(
-                  onChanged: (experience) {
-                    exp = experience;
+                  onChanged: (exp) {
+                    experience = exp;
                   },
                   keyboardType: TextInputType.multiline,
                   maxLines: null,

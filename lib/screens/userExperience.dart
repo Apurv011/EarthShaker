@@ -1,18 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'earthQuakeInfo.dart';
 
-class AllExperiences extends StatefulWidget {
+class UserExperience extends StatefulWidget {
   @override
-  _AllExperiencesState createState() => _AllExperiencesState();
+  _UserExperienceState createState() => _UserExperienceState();
 }
 
-class _AllExperiencesState extends State<AllExperiences> {
+class _UserExperienceState extends State<UserExperience> {
   String expId;
   String name = 'name';
   String exp = 'Exp';
@@ -59,26 +60,30 @@ class _AllExperiencesState extends State<AllExperiences> {
   }
 
   Future<void> getExperiences() async {
-    http.Response response =
-        await http.get("${FlutterConfig.get('MY_SERVER_URL')}experiences");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uId = prefs.getString("id");
+
+    http.Response response = await http
+        .get("${FlutterConfig.get('MY_SERVER_URL')}experiences/userexp/$uId");
+
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
       setState(() {
-        for (int i = 0; i < data["count"]; i++) {
-          expId = data['experiences'][i]['_id'];
-          exp = data['experiences'][i]['experience'];
-          name = data['experiences'][i]['userName'];
-          location = data['experiences'][i]['location'];
-          dayDate = data['experiences'][i]['dayDate'];
-          time = data['experiences'][i]['time'];
-          magColour = data['experiences'][i]['magColor'];
-          infoLink = data['experiences'][i]['link'];
-          earthquakeId = data['experiences'][i]['earthQuakeId'];
-          lat = data['experiences'][i]['lat'];
-          lon = data['experiences'][i]['lon'];
-          locDes = data['experiences'][i]['locDes'];
-          mag = data['experiences'][i]['mag'];
+        for (int i = 0; i < data.length; i++) {
+          expId = data[i]['_id'];
+          exp = data[i]['experience'];
+          name = data[i]['userName'];
+          location = data[i]['location'];
+          dayDate = data[i]['dayDate'];
+          time = data[i]['time'];
+          magColour = data[i]['magColor'];
+          infoLink = data[i]['link'];
+          earthquakeId = data[i]['earthQuakeId'];
+          lat = data[i]['lat'];
+          lon = data[i]['lon'];
+          locDes = data[i]['locDes'];
+          mag = data[i]['mag'];
 
           String valueString = magColour.split('(0x')[1].split(')')[0];
           int value = int.parse(valueString, radix: 16);
@@ -213,5 +218,25 @@ class _AllExperiencesState extends State<AllExperiences> {
       print(response.statusCode);
     }
     showSpinner = false;
+
+    // await for (var snapshot in FirebaseFirestore.instance
+    //     .collection(Get.arguments[0])
+    //     .snapshots()) {
+    //   setState(() {
+    //     for (var experience in snapshot.docs) {
+    //       name = experience.data()['name'];
+    //       exp = experience.data()['exp'];
+    //
+    //       experiences.add(
+    //         new ExperienceBubble(
+    //           name: name,
+    //           exp: exp,
+    //           colour: Get.arguments[1],
+    //         ),
+    //       );
+    //     }
+    //     showSpinner = false;
+    //   });
+    // }
   }
 }

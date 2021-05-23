@@ -1,14 +1,18 @@
+import 'package:earth_quake/main.dart';
+import 'package:earth_quake/screens/userExperience.dart';
 import 'package:flag/flag.dart';
 import 'package:earth_quake/widgets/earthQuakeTile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../earthQuakeData.dart';
 import '../networking.dart';
 import 'allExperiences.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:earth_quake/locationData.dart';
+import 'package:http/http.dart' as http;
 
 class EarthQuake extends StatefulWidget {
   @override
@@ -40,6 +44,8 @@ class _EarthQuakeState extends State<EarthQuake> {
   var lat = 0.0;
 
   var lon = 0.0;
+
+  bool isLoggedIn = false;
 
   double lamin = 0.0;
   double lomin = 0.0;
@@ -129,6 +135,24 @@ class _EarthQuakeState extends State<EarthQuake> {
 
   Future<void> updateUI() async {
     NetworkHelper networkHelper = NetworkHelper();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uEmail = prefs.getString("email");
+    var uId = prefs.getString("id");
+    var uToken = prefs.getString("token");
+
+    http.Response response = await http
+        .get(FlutterConfig.get('MY_SERVER_URL') + 'user/$uId', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $uToken',
+    });
+    if (response.statusCode == 200 && uEmail != null) {
+      setState(() {
+        isLoggedIn = true;
+      });
+    }
+
     var data;
     showSpinner = true;
     if (lamin != 0 && lomin != 0 && lamax != 0 && lomax != 0) {
@@ -200,19 +224,68 @@ class _EarthQuakeState extends State<EarthQuake> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: PopupMenuButton(itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: 1,
-                  child: TextButton(
-                    onPressed: () {
-                      Get.to(AllExperiences());
-                    },
-                    child: Text(
-                      "All Experiences",
+              if (!isLoggedIn) {
+                return [
+                  PopupMenuItem(
+                    value: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        Get.to(AllExperiences());
+                      },
+                      child: Text(
+                        "All Experiences",
+                      ),
                     ),
                   ),
-                ),
-              ];
+                ];
+              } else {
+                return [
+                  PopupMenuItem(
+                    value: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        Get.to(AllExperiences());
+                      },
+                      child: Text(
+                        "All Experiences",
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 2,
+                    child: TextButton(
+                      onPressed: () {
+                        Get.to(UserExperience());
+                      },
+                      child: Text(
+                        "My Experiences",
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 3,
+                    child: TextButton(
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.remove("email");
+                        prefs.remove("id");
+                        prefs.remove("token");
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => EarthQuake(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      child: Text(
+                        "Logout",
+                      ),
+                    ),
+                  ),
+                ];
+              }
             }),
           ),
         ],
