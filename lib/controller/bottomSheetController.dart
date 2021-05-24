@@ -42,8 +42,6 @@ class BottomSheetController {
                     mag: mag,
                     lat: lat,
                     lon: lon);
-                // ServerDataController()
-                //     .addToSaved(name, exp, location, dayDate, time, magColour);
               },
               child: Text(
                 "Done",

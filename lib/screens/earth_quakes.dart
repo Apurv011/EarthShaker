@@ -1,4 +1,3 @@
-import 'package:earth_quake/main.dart';
 import 'package:earth_quake/screens/userExperience.dart';
 import 'package:flag/flag.dart';
 import 'package:earth_quake/widgets/earthQuakeTile.dart';

@@ -1,11 +1,9 @@
 import 'dart:convert';
+import 'package:earth_quake/widgets/experienceBox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
-import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'earthQuakeInfo.dart';
 
 class AllExperiences extends StatefulWidget {
   @override
@@ -64,6 +62,25 @@ class _AllExperiencesState extends State<AllExperiences> {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
+      if (data.length == 0) {
+        setState(() {
+          experiences.add(SizedBox(
+            height: 80.0,
+          ));
+          experiences.add(new Image.asset(
+            "images/no_experience.jpg",
+          ));
+          experiences.add(SizedBox(
+            height: 30.0,
+          ));
+          experiences.add(Text(
+            "No Experience Shared Yet!",
+            style: TextStyle(fontSize: 20.0),
+          ));
+        });
+      }
+      else{
+
       setState(() {
         for (int i = 0; i < data["count"]; i++) {
           expId = data['experiences'][i]['_id'];
@@ -95,121 +112,30 @@ class _AllExperiencesState extends State<AllExperiences> {
           double latitude = lat;
 
           experiences.add(
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Material(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      elevation: 5.0,
-                      color: colour,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Author: " + name,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                              ),
-                            ),
-                            Text(
-                              "Location: " + location,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12.0,
-                              child: Divider(
-                                color: Colors.black38,
-                                endIndent: 20.0,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                              child: Text(
-                                exp,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12.0,
-                              child: Divider(
-                                color: Colors.black38,
-                                endIndent: 20.0,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    print(earthquakeId);
-                                    Get.to(EarthQuakeInfoPage(), arguments: [
-                                      colour,
-                                      magnitudeValue,
-                                      description,
-                                      loc,
-                                      dayInfo,
-                                      timeInfo,
-                                      USGSurl,
-                                      eqId,
-                                      longitude,
-                                      latitude
-                                    ]);
-                                  },
-                                  child: Text(
-                                    "About this EarthQuake",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12.0),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    var url = USGSurl;
-                                    if (await canLaunch(url)) {
-                                      await launch(url);
-                                    } else {
-                                      throw 'Could not launch $url';
-                                    }
-                                  },
-                                  child: Text(
-                                    "EarthQuake Details",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                ],
-              ),
+            ExperienceBox(
+              colour: colour,
+              name: name,
+              location: location,
+              exp: exp,
+              earthquakeId: earthquakeId,
+              magnitudeValue: magnitudeValue,
+              description: description,
+              loc: loc,
+              dayInfo: dayInfo,
+              timeInfo: timeInfo,
+              USGSurl: USGSurl,
+              eqId: eqId,
+              longitude: longitude,
+              latitude: latitude,
+              expId: expId,
+              context: context,
+              isUserExp: false,
             ),
           );
         }
       });
       print(jsonDecode(response.body));
-    } else {
+    } }else {
       print(response.statusCode);
     }
     showSpinner = false;
