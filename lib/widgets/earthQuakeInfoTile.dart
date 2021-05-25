@@ -4,9 +4,10 @@ import 'package:earth_quake/screens/earthQuakeExperience.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:earth_quake/controller/bottomSheetController.dart';
+import 'package:earth_quake/widgets/experienceSheet.dart';
 import 'package:get/get.dart';
-import 'locationPage.dart';
+import '../sizeConfig.dart';
+import '../screens/locationPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:earth_quake/screens/earth_quakes.dart';
@@ -49,6 +50,7 @@ class _EarthQuakeInfoTileState extends State<EarthQuakeInfoTile> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -56,143 +58,163 @@ class _EarthQuakeInfoTileState extends State<EarthQuakeInfoTile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              height: 60.0,
+              height: getProportionateScreenHeight(40.0),
             ),
-            TextButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                var email = prefs.getString("email");
-                var id = prefs.getString("id");
-                var token = prefs.getString("token");
-                var name = prefs.getString("username");
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.edit,
+                  color: widget.magColour,
+                ),
+                SizedBox(
+                  width: getProportionateScreenWidth(10.0),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    var email = prefs.getString("email");
+                    var id = prefs.getString("id");
+                    var token = prefs.getString("token");
+                    var name = prefs.getString("username");
 
-                isLoggedIn = await isLoggedInAndAuth(email, id, token, name);
+                    isLoggedIn =
+                        await isLoggedInAndAuth(email, id, token, name);
 
-                if (isLoggedIn) {
-                  BottomSheetController().openBottomSheet(
-                      userName: name,
-                      experience: exp,
-                      earthQuakeId: widget.id,
-                      location: widget.location,
-                      userId: id,
-                      link: widget.urlUSGS,
-                      dayDate: widget.dayDate,
-                      time: widget.time,
-                      magColor: widget.magColour,
-                      mag: widget.magnitude,
-                      lat: widget.lat,
-                      lon: widget.lon,
-                      locDes: widget.locDes);
-                } else {
-                  return _loginAlert(context);
-                }
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.edit,
-                    color: widget.magColour,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
+                    if (isLoggedIn) {
+                      Scaffold.of(context).showBottomSheet(
+                        (context) {
+                          return ExperienceSheet(
+                              isEdit: false,
+                              userName: name,
+                              experience: exp,
+                              earthQuakeId: widget.id,
+                              location: widget.location,
+                              userId: id,
+                              link: widget.urlUSGS,
+                              dayDate: widget.dayDate,
+                              time: widget.time,
+                              magColor: widget.magColour,
+                              mag: widget.magnitude,
+                              lat: widget.lat,
+                              lon: widget.lon,
+                              locDes: widget.locDes);
+                        },
+                        elevation: 20.0,
+                      );
+                    } else {
+                      return _loginAlert(context);
+                    }
+                  },
+                  child: Text(
                     "Did you feel It? Share here",
-                    style: TextStyle(color: widget.magColour, fontSize: 20.0),
+                    style: TextStyle(
+                        color: widget.magColour,
+                        fontSize: getProportionateScreenHeight(20.0)),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(
-              height: 40.0,
-              width: 200.0,
+              height: getProportionateScreenHeight(40.0),
+              width: getProportionateScreenWidth(200.0),
               child: Divider(
                 color: Colors.grey,
-                indent: 40.0,
-                endIndent: 40.0,
+                indent: getProportionateScreenWidth(40.0),
+                endIndent: getProportionateScreenWidth(40.0),
               ),
             ),
-            TextButton(
-              onPressed: () async {
-                Get.to(EarthQuakeExperience(),
-                    arguments: [widget.id, widget.magColour]);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.receipt_sharp,
-                    color: widget.magColour,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.receipt_sharp,
+                  color: widget.magColour,
+                ),
+                SizedBox(
+                  width: getProportionateScreenWidth(10.0),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Get.to(EarthQuakeExperience(),
+                        arguments: [widget.id, widget.magColour]);
+                  },
+                  child: Text(
                     "How others felt It?",
-                    style: TextStyle(color: widget.magColour, fontSize: 20.0),
+                    style: TextStyle(
+                        color: widget.magColour,
+                        fontSize: getProportionateScreenHeight(20.0)),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(
-              height: 40.0,
-              width: 200.0,
+              height: getProportionateScreenHeight(40.0),
+              width: getProportionateScreenWidth(200.0),
               child: Divider(
-                indent: 40.0,
-                endIndent: 40.0,
+                indent: getProportionateScreenWidth(40.0),
+                endIndent: getProportionateScreenWidth(40.0),
                 color: Colors.grey,
               ),
             ),
             CircleAvatar(
-              radius: 70.0,
+              radius: getProportionateScreenWidth(70.0),
               backgroundColor: widget.magColour,
               child: Text(
                 widget.magnitude,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 50.0,
+                  fontSize: getProportionateScreenHeight(50.0),
                 ),
               ),
             ),
             SizedBox(
-              height: 20.0,
+              height: getProportionateScreenHeight(20.0),
             ),
             Text(
               widget.locDes,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black, fontSize: 20.0),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: getProportionateScreenHeight(20.0)),
             ),
             Text(
               widget.location,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black, fontSize: 20.0),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: getProportionateScreenHeight(20.0)),
             ),
             SizedBox(
-              height: 40.0,
-              width: 200.0,
+              height: getProportionateScreenHeight(40.0),
+              width: getProportionateScreenWidth(200.0),
               child: Divider(
-                indent: 40.0,
-                endIndent: 40.0,
+                indent: getProportionateScreenWidth(40.0),
+                endIndent: getProportionateScreenWidth(40.0),
                 color: Colors.grey,
               ),
             ),
             Text(
               widget.dayDate,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54, fontSize: 20.0),
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: getProportionateScreenHeight(20.0)),
             ),
             Text(
               widget.time,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54, fontSize: 20.0),
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: getProportionateScreenHeight(20.0)),
             ),
             SizedBox(
-              height: 40.0,
-              width: 200.0,
+              height: getProportionateScreenHeight(40.0),
+              width: getProportionateScreenWidth(200.0),
               child: Divider(
-                indent: 40.0,
-                endIndent: 40.0,
+                indent: getProportionateScreenWidth(40.0),
+                endIndent: getProportionateScreenWidth(40.0),
                 color: Colors.grey,
               ),
             ),
@@ -202,10 +224,10 @@ class _EarthQuakeInfoTileState extends State<EarthQuakeInfoTile> {
                 Icon(
                   Icons.location_on_outlined,
                   color: widget.magColour,
-                  size: 25.0,
+                  size: getProportionateScreenHeight(25.0),
                 ),
                 SizedBox(
-                  width: 5.0,
+                  width: getProportionateScreenWidth(5.0),
                 ),
                 FlatButton(
                   onPressed: () {
@@ -213,48 +235,55 @@ class _EarthQuakeInfoTileState extends State<EarthQuakeInfoTile> {
                   },
                   child: Text(
                     "View Location",
-                    style: TextStyle(fontSize: 20.0, color: widget.magColour),
+                    style: TextStyle(
+                        fontSize: getProportionateScreenHeight(20.0),
+                        color: widget.magColour),
                   ),
                 ),
               ],
             ),
             SizedBox(
-              height: 40.0,
-              width: 200.0,
+              height: getProportionateScreenHeight(40.0),
+              width: getProportionateScreenWidth(200.0),
               child: Divider(
-                indent: 40.0,
-                endIndent: 40.0,
+                indent: getProportionateScreenWidth(40.0),
+                endIndent: getProportionateScreenWidth(40.0),
                 color: Colors.grey,
               ),
             ),
-            TextButton(
-              onPressed: () async {
-                var url = widget.urlUSGS;
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.near_me,
-                    size: 30.0,
-                    color: widget.magColour,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.near_me,
+                  size: getProportionateScreenHeight(30.0),
+                  color: widget.magColour,
+                ),
+                SizedBox(
+                  width: getProportionateScreenWidth(10.0),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    var url = widget.urlUSGS;
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                  child: Text(
                     "More Information",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15.0, color: widget.magColour),
+                    style: TextStyle(
+                        fontSize: getProportionateScreenHeight(15.0),
+                        color: widget.magColour),
                   ),
-                ],
-              ),
-            )
+                ),
+              ],
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(20.0),
+            ),
           ],
         ),
       ),
@@ -315,7 +344,7 @@ class _EarthQuakeInfoTileState extends State<EarthQuakeInfoTile> {
             style: TextStyle(color: Colors.red, fontSize: 15.0),
           ),
           SizedBox(
-            height: 12.0,
+            height: getProportionateScreenHeight(12.0),
           ),
           TextButton(
             onPressed: () {

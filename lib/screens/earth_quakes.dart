@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../earthQuakeData.dart';
-import '../networking.dart';
+import '../controller/networking.dart';
 import 'allExperiences.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:earth_quake/locationData.dart';
@@ -58,17 +58,12 @@ class _EarthQuakeState extends State<EarthQuake> {
     updateUI();
     drawerItems.add(
       Padding(
-        padding: const EdgeInsets.all(40.0),
+        padding: EdgeInsets.all(40.0),
         child: Column(
           children: [
             CircleAvatar(
-              radius: 55,
-              backgroundColor: Colors.white,
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: NetworkImage(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTza2yT7dqcRm1WJao9JdGo7mkqqZRn1wVRJwX7cfunWbIiSwugLq2P_qRU53EGI2lRZH4&usqp=CAU"),
-              ),
+              radius: 60.0,
+              backgroundImage: AssetImage("images/bg.png"),
             ),
             SizedBox(height: 20.0),
             Text(
@@ -112,8 +107,8 @@ class _EarthQuakeState extends State<EarthQuake> {
           tileColor: Colors.white24,
           leading: Flag(
             map[key][0],
-            height: 30,
-            width: 50,
+            height: 30.0,
+            width: 50.0,
             fit: BoxFit.fill,
           ),
           title: Text(key),
@@ -229,10 +224,12 @@ class _EarthQuakeState extends State<EarthQuake> {
                     value: 1,
                     child: TextButton(
                       onPressed: () {
+                        Navigator.pop(context);
                         Get.to(AllExperiences());
                       },
                       child: Text(
                         "All Experiences",
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -243,10 +240,12 @@ class _EarthQuakeState extends State<EarthQuake> {
                     value: 1,
                     child: TextButton(
                       onPressed: () {
+                        Navigator.pop(context);
                         Get.to(AllExperiences());
                       },
                       child: Text(
                         "All Experiences",
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -254,10 +253,12 @@ class _EarthQuakeState extends State<EarthQuake> {
                     value: 2,
                     child: TextButton(
                       onPressed: () {
+                        Navigator.pop(context);
                         Get.to(UserExperience());
                       },
                       child: Text(
                         "My Experiences",
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -265,6 +266,7 @@ class _EarthQuakeState extends State<EarthQuake> {
                     value: 3,
                     child: TextButton(
                       onPressed: () async {
+                        Navigator.pop(context);
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         prefs.remove("email");
@@ -280,6 +282,7 @@ class _EarthQuakeState extends State<EarthQuake> {
                       },
                       child: Text(
                         "Logout",
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),

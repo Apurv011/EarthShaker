@@ -121,6 +121,8 @@ class _UserExperienceState extends State<UserExperience> {
 
             experiences.add(
               ExperienceBox(
+                token: token,
+                userId: uId,
                 colour: colour,
                 name: name,
                 location: location,
@@ -136,7 +138,6 @@ class _UserExperienceState extends State<UserExperience> {
                 longitude: longitude,
                 latitude: latitude,
                 expId: expId,
-                token: token,
                 context: context,
                 isUserExp: true,
               ),

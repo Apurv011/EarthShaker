@@ -19,6 +19,7 @@ class _LocationPageState extends State<LocationPage> {
       ),
       body: new FlutterMap(
         options: new MapOptions(
+          zoom: 2.0,
           center: new LatLng(Get.arguments[1], Get.arguments[0]),
         ),
         layers: [

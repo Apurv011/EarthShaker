@@ -1,4 +1,5 @@
 import 'package:earth_quake/screens/earthQuakeInfo.dart';
+import 'package:earth_quake/sizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../earthQuakeData.dart';
@@ -11,6 +12,7 @@ class EarthQuakeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     String magValue = earthQuakeData.magnitude.length < 3
         ? earthQuakeData.magnitude
         : earthQuakeData.magnitude.substring(0, 3);
@@ -40,7 +42,7 @@ class EarthQuakeTile extends StatelessWidget {
             ),
           ),
           title: Padding(
-            padding: EdgeInsets.only(top: 9.0),
+            padding: EdgeInsets.only(top: getProportionateScreenHeight(9.0)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -55,7 +57,7 @@ class EarthQuakeTile extends StatelessWidget {
             ),
           ),
           trailing: Padding(
-            padding: const EdgeInsets.only(top: 9.0),
+            padding: EdgeInsets.only(top: getProportionateScreenHeight(9.0)),
             child: Column(
               children: [
                 Text(earthQuakeData.dayDate),
@@ -65,10 +67,10 @@ class EarthQuakeTile extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 3.0,
-          width: 370,
+          height: getProportionateScreenHeight(3.0),
+          width: getProportionateScreenWidth(370.0),
           child: Divider(
-            indent: 40.0,
+            indent: getProportionateScreenWidth(40.0),
             color: Colors.black54,
           ),
         ),

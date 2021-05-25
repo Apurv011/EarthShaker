@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:earth_quake/screens/userExperience.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ServerDataController {
   Future<void> addExperience(
@@ -40,5 +42,40 @@ class ServerDataController {
       }),
     );
     print(response.statusCode);
+  }
+
+  Future<bool> editExperience({
+    String url,
+    String experience,
+    String token,
+  }) async {
+    http.Response response = await http.patch(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'experience': experience,
+        }));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deleteExperience({String url, String token}) async {
+    http.Response response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

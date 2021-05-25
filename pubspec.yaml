@@ -16,12 +16,10 @@ dependencies:
   url_launcher: ^5.7.10
   intl: ^0.16.1
   get: ^3.24.0
-  cloud_firestore: ^0.16.0
-  firebase_core: ^0.7.0
   flutter_map: ^0.11.0
   flag: ^3.2.2
-  shared_preferences: ^2.0.5
   rflutter_alert: ^2.0.2
+  shared_preferences: ^2.0.5
 
 dev_dependencies:
   flutter_test:

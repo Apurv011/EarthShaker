@@ -1,14 +1,17 @@
+import 'package:earth_quake/widgets/experienceSheet.dart';
+import 'package:earth_quake/controller/serverDataController.dart';
 import 'package:earth_quake/screens/earthQuakeInfo.dart';
 import 'package:earth_quake/screens/userExperience.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 class ExperienceBox extends StatelessWidget {
   const ExperienceBox(
       {Key key,
+      this.userId,
       @required this.colour,
       @required this.name,
       @required this.location,
@@ -24,11 +27,12 @@ class ExperienceBox extends StatelessWidget {
       @required this.longitude,
       @required this.latitude,
       @required this.expId,
-      this.token,
       @required this.context,
-      @required this.isUserExp})
+      @required this.isUserExp,
+      this.token})
       : super(key: key);
 
+  final String userId;
   final Color colour;
   final String name;
   final String location;
@@ -155,31 +159,58 @@ class ExperienceBox extends StatelessWidget {
                       ),
                     ),
                     isUserExp
-                        ? TextButton(
-                            onPressed: () async {
-                              http.Response response = await http.delete(
-                                  "${FlutterConfig.get('MY_SERVER_URL')}experiences/$expId",
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Accept': 'application/json',
-                                    'Authorization': 'Bearer $token',
-                                  });
-                              print(response.statusCode);
-                              if (response.statusCode == 200) {
-                                print("Success");
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        UserExperience(),
-                                  ),
-                                  (route) => false,
-                                );
-                              } else {
-                                print("Error");
-                              }
-                            },
-                            child: Icon(Icons.delete, color: Colors.white),
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Scaffold.of(context).showBottomSheet(
+                                    (context) {
+                                      return ExperienceSheet(
+                                          isEdit: true,
+                                          token: token,
+                                          experienceId: expId,
+                                          userName: name,
+                                          experience: exp,
+                                          earthQuakeId: earthquakeId,
+                                          location: location,
+                                          userId: userId,
+                                          link: USGSurl,
+                                          dayDate: dayInfo,
+                                          time: timeInfo,
+                                          magColor: colour,
+                                          mag: magnitudeValue,
+                                          lat: latitude,
+                                          lon: longitude,
+                                          locDes: description);
+                                    },
+                                  );
+                                },
+                                child: Icon(Icons.edit, color: Colors.white),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  var response = await ServerDataController()
+                                      .deleteExperience(
+                                          url:
+                                              "${FlutterConfig.get('MY_SERVER_URL')}experiences/$expId",
+                                          token: token);
+                                  if (response) {
+                                    print("Success");
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            UserExperience(),
+                                      ),
+                                    );
+                                  } else {
+                                    print("Error");
+                                  }
+                                },
+                                child: Icon(Icons.delete, color: Colors.white),
+                              ),
+                            ],
                           )
                         : SizedBox(height: 0.0),
                   ],
