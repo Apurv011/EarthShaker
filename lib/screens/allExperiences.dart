@@ -81,7 +81,7 @@ class _AllExperiencesState extends State<AllExperiences> {
         });
       } else {
         setState(() {
-          for (int i = 0; i < data["count"]; i++) {
+          for (int i = data["count"] - 1; i >= 0; i--) {
             expId = data['experiences'][i]['_id'];
             exp = data['experiences'][i]['experience'];
             name = data['experiences'][i]['userName'];

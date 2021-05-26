@@ -229,7 +229,7 @@ class _EarthQuakeInfoTileState extends State<EarthQuakeInfoTile> {
                 SizedBox(
                   width: getProportionateScreenWidth(5.0),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Get.to(LocationPage(), arguments: [widget.lon, widget.lat]);
                   },

@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'package:earth_quake/screens/userExperience.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ServerDataController {
   Future<void> addExperience(

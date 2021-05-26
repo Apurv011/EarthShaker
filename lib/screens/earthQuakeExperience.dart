@@ -83,7 +83,7 @@ class _EarthQuakeExperienceState extends State<EarthQuakeExperience> {
         });
       } else {
         setState(() {
-          for (int i = 0; i < data.length; i++) {
+          for (int i = data.length-1; i >= 0; i--) {
             expId = data[i]['_id'];
             exp = data[i]['experience'];
             name = data[i]['userName'];

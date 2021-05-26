@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ExperienceBox extends StatelessWidget {
@@ -190,23 +191,51 @@ class ExperienceBox extends StatelessWidget {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  var response = await ServerDataController()
-                                      .deleteExperience(
-                                          url:
-                                              "${FlutterConfig.get('MY_SERVER_URL')}experiences/$expId",
-                                          token: token);
-                                  if (response) {
-                                    print("Success");
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            UserExperience(),
+                                  return Alert(
+                                    context: context,
+                                    title: "Delete this Experience?",
+                                    buttons: [
+                                      DialogButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        color: Colors.green,
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
-                                    );
-                                  } else {
-                                    print("Error");
-                                  }
+                                      DialogButton(
+                                        onPressed: () async {
+                                          var response =
+                                              await ServerDataController()
+                                                  .deleteExperience(
+                                                      url:
+                                                          "${FlutterConfig.get('MY_SERVER_URL')}experiences/$expId",
+                                                      token: token);
+                                          Navigator.pop(context);
+                                          if (response) {
+                                            print("Success");
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        UserExperience(),
+                                              ),
+                                            );
+                                          } else {
+                                            print("Error");
+                                          }
+                                        },
+                                        color: Colors.red,
+                                        child: Text(
+                                          "Delete",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  ).show();
                                 },
                                 child: Icon(Icons.delete, color: Colors.white),
                               ),

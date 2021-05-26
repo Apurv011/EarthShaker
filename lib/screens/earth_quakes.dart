@@ -1,10 +1,12 @@
 import 'package:earth_quake/screens/userExperience.dart';
+import 'package:earth_quake/sizeConfig.dart';
 import 'package:flag/flag.dart';
 import 'package:earth_quake/widgets/earthQuakeTile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../earthQuakeData.dart';
 import '../controller/networking.dart';
@@ -50,6 +52,8 @@ class _EarthQuakeState extends State<EarthQuake> {
   double lomin = 0.0;
   double lamax = 0.0;
   double lomax = 0.0;
+
+  String sortBy = "";
 
   @override
   // ignore: missing_return
@@ -128,6 +132,7 @@ class _EarthQuakeState extends State<EarthQuake> {
   }
 
   Future<void> updateUI() async {
+    showSpinner = true;
     NetworkHelper networkHelper = NetworkHelper();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -150,10 +155,19 @@ class _EarthQuakeState extends State<EarthQuake> {
     var data;
     showSpinner = true;
     if (lamin != 0 && lomin != 0 && lamax != 0 && lomax != 0) {
-      data = await networkHelper.getData(
-          "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax");
+      if (sortBy != "") {
+        data = await networkHelper.getData(
+            "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax&orderby=$sortBy");
+      } else {
+        data = await networkHelper.getData(
+            "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax");
+      }
     } else {
-      data = await networkHelper.getData(fixedUrl);
+      if (sortBy != "") {
+        data = await networkHelper.getData("$fixedUrl&orderby=$sortBy");
+      } else {
+        data = await networkHelper.getData(fixedUrl);
+      }
     }
     setState(() {
       earthQuakeTiles.clear();
@@ -215,6 +229,12 @@ class _EarthQuakeState extends State<EarthQuake> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              return _sortAlert(context);
+            },
+            child: Icon(Icons.sort_rounded, color: Colors.white),
+          ),
           Padding(
             padding: EdgeInsets.all(8.0),
             child: PopupMenuButton(itemBuilder: (context) {
@@ -311,5 +331,89 @@ class _EarthQuakeState extends State<EarthQuake> {
         ),
       ),
     );
+  }
+
+  _sortAlert(BuildContext context) {
+    return Alert(
+      context: context,
+      title: "Sort EarthQuakes",
+      content: Column(
+        children: [
+          Divider(
+            thickness: 1.0,
+            color: Colors.black,
+            indent: getProportionateScreenHeight(2.0),
+            endIndent: getProportionateScreenHeight(2.0),
+          ),
+          ListTile(
+            leading: Icon(Icons.arrow_downward_rounded, color: Colors.red),
+            title: Text(
+              "Descending Time",
+              style: TextStyle(color: Colors.red),
+            ),
+            onTap: () {
+              setState(() {
+                sortBy = "time";
+              });
+              Navigator.pop(context);
+              updateUI();
+            },
+          ),
+          Divider(
+            color: Colors.black38,
+            indent: getProportionateScreenHeight(4.0),
+            endIndent: getProportionateScreenHeight(4.0),
+          ),
+          ListTile(
+            leading: Icon(Icons.arrow_upward_rounded, color: Colors.green),
+            title: Text(
+              "Ascending Time",
+              style: TextStyle(color: Colors.green),
+            ),
+            onTap: () {
+              setState(() {
+                sortBy = "time-asc";
+              });
+              Navigator.pop(context);
+              updateUI();
+            },
+          ),
+          Divider(
+            color: Colors.black38,
+            indent: getProportionateScreenHeight(4.0),
+            endIndent: getProportionateScreenHeight(4.0),
+          ),
+          ListTile(
+            leading: Icon(Icons.arrow_downward_rounded, color: Colors.red),
+            title: Text("Descending Magnitude",
+                style: TextStyle(color: Colors.red)),
+            onTap: () {
+              setState(() {
+                sortBy = "magnitude";
+              });
+              Navigator.pop(context);
+              updateUI();
+            },
+          ),
+          Divider(
+            color: Colors.black38,
+            indent: getProportionateScreenHeight(4.0),
+            endIndent: getProportionateScreenHeight(4.0),
+          ),
+          ListTile(
+            leading: Icon(Icons.arrow_upward_rounded, color: Colors.green),
+            title: Text("Ascending Magnitude",
+                style: TextStyle(color: Colors.green)),
+            onTap: () {
+              setState(() {
+                sortBy = "magnitude-asc";
+              });
+              Navigator.pop(context);
+              updateUI();
+            },
+          ),
+        ],
+      ),
+    ).show();
   }
 }
