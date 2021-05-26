@@ -231,7 +231,7 @@ class _EarthQuakeState extends State<EarthQuake> {
         actions: [
           TextButton(
             onPressed: () {
-              return _sortAlert(context);
+              return _orderByAlert(context);
             },
             child: Icon(Icons.sort_rounded, color: Colors.white),
           ),
@@ -333,10 +333,10 @@ class _EarthQuakeState extends State<EarthQuake> {
     );
   }
 
-  _sortAlert(BuildContext context) {
+  _orderByAlert(BuildContext context) {
     return Alert(
       context: context,
-      title: "Sort EarthQuakes",
+      title: "Order EarthQuakes By",
       content: Column(
         children: [
           Divider(
