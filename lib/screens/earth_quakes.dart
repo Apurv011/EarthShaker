@@ -235,81 +235,78 @@ class _EarthQuakeState extends State<EarthQuake> {
             },
             child: Icon(Icons.sort_rounded, color: Colors.white),
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: PopupMenuButton(itemBuilder: (context) {
-              if (!isLoggedIn) {
-                return [
-                  PopupMenuItem(
-                    value: 1,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Get.to(AllExperiences());
-                      },
-                      child: Text(
-                        "All Experiences",
-                        style: TextStyle(color: Colors.black),
-                      ),
+          PopupMenuButton(itemBuilder: (context) {
+            if (!isLoggedIn) {
+              return [
+                PopupMenuItem(
+                  value: 1,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Get.to(AllExperiences());
+                    },
+                    child: Text(
+                      "All Experiences",
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
-                ];
-              } else {
-                return [
-                  PopupMenuItem(
-                    value: 1,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Get.to(AllExperiences());
-                      },
-                      child: Text(
-                        "All Experiences",
-                        style: TextStyle(color: Colors.black),
-                      ),
+                ),
+              ];
+            } else {
+              return [
+                PopupMenuItem(
+                  value: 1,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Get.to(AllExperiences());
+                    },
+                    child: Text(
+                      "All Experiences",
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Get.to(UserExperience());
-                      },
-                      child: Text(
-                        "My Experiences",
-                        style: TextStyle(color: Colors.black),
-                      ),
+                ),
+                PopupMenuItem(
+                  value: 2,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Get.to(UserExperience());
+                    },
+                    child: Text(
+                      "My Experiences",
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
-                  PopupMenuItem(
-                    value: 3,
-                    child: TextButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.remove("email");
-                        prefs.remove("id");
-                        prefs.remove("token");
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => EarthQuake(),
-                          ),
-                          (route) => false,
-                        );
-                      },
-                      child: Text(
-                        "Logout",
-                        style: TextStyle(color: Colors.black),
-                      ),
+                ),
+                PopupMenuItem(
+                  value: 3,
+                  child: TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.remove("email");
+                      prefs.remove("id");
+                      prefs.remove("token");
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => EarthQuake(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    child: Text(
+                      "Logout",
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
-                ];
-              }
-            }),
-          ),
+                ),
+              ];
+            }
+          }),
         ],
       ),
       drawer: Drawer(
