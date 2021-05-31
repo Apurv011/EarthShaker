@@ -192,9 +192,13 @@ class _EarthQuakeState extends State<EarthQuake> {
         time = timeParts[0] + " " + dateTimeParts[4];
 
         String loc = data['features'][i]['properties']['place'];
-        if (loc.contains('of')) {
-          var parts = loc.split('of');
-          locDes = " " + parts[0] + "of";
+        if (loc.contains('off')) {
+          var parts = loc.split('of ');
+          locDes = parts[0] + "of";
+          location = parts[1];
+        } else if (loc.contains('of ')) {
+          var parts = loc.split('of ');
+          locDes = parts[0] + "of";
           location = parts[1];
         } else {
           locDes = "Near the ";
