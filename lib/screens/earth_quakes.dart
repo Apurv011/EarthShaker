@@ -1,5 +1,6 @@
 import 'package:earth_quake/screens/userExperience.dart';
 import 'package:earth_quake/sizeConfig.dart';
+import 'package:earth_quake/controller/dateSelectionController.dart';
 import 'package:flag/flag.dart';
 import 'package:earth_quake/widgets/earthQuakeTile.dart';
 import 'package:flutter/material.dart';
@@ -157,7 +158,6 @@ class _EarthQuakeState extends State<EarthQuake> {
     }
 
     var data;
-    showSpinner = true;
 
     if (lamin != 0 && lomin != 0 && lamax != 0 && lomax != 0) {
       if (sortBy != "") {
@@ -267,7 +267,175 @@ class _EarthQuakeState extends State<EarthQuake> {
           ),
           TextButton(
             onPressed: () {
-              return _dateAlert(context);
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (context) {
+                  return GetX<DateSelectionController>(
+                    init: DateSelectionController(),
+                    builder: (controller) {
+                      return Wrap(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: getProportionateScreenHeight(25.0)),
+                              child: Text(
+                                "Get EarthQuakes in Specific Time Period",
+                                style: TextStyle(
+                                    color: Color(0xFFC03823),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        getProportionateScreenWidth(15.0)),
+                              ),
+                            ),
+                          ),
+                          ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "From",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  startDate == ""
+                                      ? 'Pick start date'
+                                      : startDate,
+                                  style: TextStyle(
+                                    color: controller.startDate.toString() == ""
+                                        ? Colors.black54
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            leading: TextButton(
+                              child: Icon(
+                                Icons.calendar_today,
+                                color: Color(0xFFC03823),
+                              ),
+                              onPressed: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2021),
+                                  lastDate: DateTime(2022),
+                                ).then(
+                                  (date) {
+                                    setState(() {
+                                      controller.changeStartDate(
+                                          date.toString().split(" ")[0]);
+                                      start = date;
+                                      startDate =
+                                          controller.startDate.toString();
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(10.0),
+                          ),
+                          ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "To",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  endDate == "" ? 'Pick end date' : endDate,
+                                  style: TextStyle(
+                                    color: controller.endDate.toString() == ""
+                                        ? Colors.black54
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            leading: TextButton(
+                              child: Icon(
+                                Icons.calendar_today,
+                                color: Color(0xFFC03823),
+                              ),
+                              onPressed: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate:
+                                      start == null ? DateTime.now() : start,
+                                  lastDate: DateTime.now(),
+                                ).then(
+                                  (date) {
+                                    setState(() {
+                                      controller.changeEndDate(
+                                          date.toString().split(" ")[0]);
+                                      endDate = controller.endDate.toString();
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: getProportionateScreenHeight(30.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Color(0xFFC03823),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    updateUI();
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Go",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Color(0xFFC03823),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      startDate = "";
+                                      endDate = "";
+                                    });
+                                    Navigator.pop(context);
+                                    updateUI();
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Clear",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
             },
             child: Icon(Icons.calendar_today_outlined, color: Colors.white),
           ),
@@ -448,106 +616,5 @@ class _EarthQuakeState extends State<EarthQuake> {
         ],
       ),
     ).show();
-  }
-
-  _dateAlert(BuildContext context) {
-    return Alert(
-        context: context,
-        title: "Select Time Range",
-        content: Column(
-          children: [
-            Divider(
-              thickness: 1.0,
-              color: Colors.black,
-              indent: getProportionateScreenHeight(2.0),
-              endIndent: getProportionateScreenHeight(2.0),
-            ),
-            ListTile(
-              title: Text(
-                startDate == "" ? 'Pick Start date' : start,
-                style: TextStyle(
-                  color: startDate == "" ? Colors.grey : Colors.black,
-                ),
-              ),
-              leading: TextButton(
-                child: Icon(
-                  Icons.calendar_today,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  showDatePicker(
-                    context: context,
-                    helpText: "Select Start Date",
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2019),
-                    lastDate: DateTime.now(),
-                  ).then(
-                    (date) {
-                      setState(() {
-                        start = date;
-                        startDate = date.toString().split(" ")[0];
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-            Divider(
-              color: Colors.black38,
-              indent: getProportionateScreenHeight(4.0),
-              endIndent: getProportionateScreenHeight(4.0),
-            ),
-            ListTile(
-              title: Text(
-                endDate == "" ? 'Pick End date' : endDate,
-                style: TextStyle(
-                  color: endDate == "" ? Colors.grey : Colors.black,
-                ),
-              ),
-              leading: TextButton(
-                child: Icon(
-                  Icons.calendar_today,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  showDatePicker(
-                    context: context,
-                    helpText: "Select End Date",
-                    initialDate: DateTime.now(),
-                    firstDate: start,
-                    lastDate: DateTime.now(),
-                  ).then(
-                    (date) {
-                      setState(() {
-                        endDate = date.toString().split(" ")[0];
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-              child: Text("Done"),
-              onPressed: () {
-                setState(() {
-                  showSpinner = true;
-                });
-                Navigator.pop(context);
-                updateUI();
-              }),
-          DialogButton(
-              child: Text("Clear"),
-              onPressed: () {
-                setState(() {
-                  startDate = "";
-                  endDate = "";
-                });
-                Navigator.pop(context);
-                updateUI();
-              }),
-        ]).show();
   }
 }
