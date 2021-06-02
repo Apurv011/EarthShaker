@@ -53,6 +53,10 @@ class _EarthQuakeState extends State<EarthQuake> {
   double lamax = 0.0;
   double lomax = 0.0;
 
+  String startDate = "";
+  String endDate = "";
+  DateTime start;
+
   String sortBy = "";
 
   @override
@@ -154,19 +158,41 @@ class _EarthQuakeState extends State<EarthQuake> {
 
     var data;
     showSpinner = true;
+
     if (lamin != 0 && lomin != 0 && lamax != 0 && lomax != 0) {
       if (sortBy != "") {
-        data = await networkHelper.getData(
-            "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax&orderby=$sortBy");
+        if (startDate != "" && endDate != "") {
+          data = await networkHelper.getData(
+              "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax&orderby=$sortBy&starttime=$startDate&endtime=$endDate");
+        } else {
+          data = await networkHelper.getData(
+              "$fixedUrl&limit=300&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax&orderby=$sortBy");
+        }
       } else {
-        data = await networkHelper.getData(
-            "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax");
+        if (startDate != "" && endDate != "") {
+          data = await networkHelper.getData(
+              "$fixedUrl&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax&starttime=$startDate&endtime=$endDate");
+        } else {
+          data = await networkHelper.getData(
+              "$fixedUrl&limit=300&minlatitude=$lamin&minlongitude=$lomin&maxlatitude=$lamax&maxlongitude=$lomax");
+        }
       }
     } else {
       if (sortBy != "") {
-        data = await networkHelper.getData("$fixedUrl&orderby=$sortBy");
+        if (startDate != "" && endDate != "") {
+          data = await networkHelper.getData(
+              "$fixedUrl&orderby=$sortBy&starttime=$startDate&endtime=$endDate");
+        } else {
+          data = await networkHelper
+              .getData("$fixedUrl&limit=300&orderby=$sortBy");
+        }
       } else {
-        data = await networkHelper.getData(fixedUrl);
+        if (startDate != "" && endDate != "") {
+          data = await networkHelper
+              .getData("$fixedUrl&starttime=$startDate&endtime=$endDate");
+        } else {
+          data = await networkHelper.getData("$fixedUrl&limit=300");
+        }
       }
     }
     setState(() {
@@ -238,6 +264,12 @@ class _EarthQuakeState extends State<EarthQuake> {
               return _orderByAlert(context);
             },
             child: Icon(Icons.sort_rounded, color: Colors.white),
+          ),
+          TextButton(
+            onPressed: () {
+              return _dateAlert(context);
+            },
+            child: Icon(Icons.calendar_today_outlined, color: Colors.white),
           ),
           PopupMenuButton(itemBuilder: (context) {
             if (!isLoggedIn) {
@@ -416,5 +448,106 @@ class _EarthQuakeState extends State<EarthQuake> {
         ],
       ),
     ).show();
+  }
+
+  _dateAlert(BuildContext context) {
+    return Alert(
+        context: context,
+        title: "Select Time Range",
+        content: Column(
+          children: [
+            Divider(
+              thickness: 1.0,
+              color: Colors.black,
+              indent: getProportionateScreenHeight(2.0),
+              endIndent: getProportionateScreenHeight(2.0),
+            ),
+            ListTile(
+              title: Text(
+                startDate == "" ? 'Pick Start date' : start,
+                style: TextStyle(
+                  color: startDate == "" ? Colors.grey : Colors.black,
+                ),
+              ),
+              leading: TextButton(
+                child: Icon(
+                  Icons.calendar_today,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    helpText: "Select Start Date",
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2019),
+                    lastDate: DateTime.now(),
+                  ).then(
+                    (date) {
+                      setState(() {
+                        start = date;
+                        startDate = date.toString().split(" ")[0];
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+            Divider(
+              color: Colors.black38,
+              indent: getProportionateScreenHeight(4.0),
+              endIndent: getProportionateScreenHeight(4.0),
+            ),
+            ListTile(
+              title: Text(
+                endDate == "" ? 'Pick End date' : endDate,
+                style: TextStyle(
+                  color: endDate == "" ? Colors.grey : Colors.black,
+                ),
+              ),
+              leading: TextButton(
+                child: Icon(
+                  Icons.calendar_today,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    helpText: "Select End Date",
+                    initialDate: DateTime.now(),
+                    firstDate: start,
+                    lastDate: DateTime.now(),
+                  ).then(
+                    (date) {
+                      setState(() {
+                        endDate = date.toString().split(" ")[0];
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+              child: Text("Done"),
+              onPressed: () {
+                setState(() {
+                  showSpinner = true;
+                });
+                Navigator.pop(context);
+                updateUI();
+              }),
+          DialogButton(
+              child: Text("Clear"),
+              onPressed: () {
+                setState(() {
+                  startDate = "";
+                  endDate = "";
+                });
+                Navigator.pop(context);
+                updateUI();
+              }),
+        ]).show();
   }
 }
