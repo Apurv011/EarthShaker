@@ -322,7 +322,7 @@ class _EarthQuakeState extends State<EarthQuake> {
                                   context: context,
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(2021),
-                                  lastDate: DateTime(2022),
+                                  lastDate: DateTime.now(),
                                 ).then(
                                   (date) {
                                     setState(() {
