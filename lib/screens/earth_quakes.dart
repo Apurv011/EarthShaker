@@ -217,13 +217,13 @@ class _EarthQuakeState extends State<EarthQuake> {
         var timeParts = dateTimeParts[3].split(":");
         time = timeParts[0] + " " + dateTimeParts[4];
 
-        String loc = data['features'][i]['properties']['place'];
-        if (loc.contains('off')) {
-          var parts = loc.split('of ');
+        String loc = data['features'][i]['properties']['place'].toString();
+        if (loc.contains("off")) {
+          var parts = loc.split("of ");
           locDes = parts[0] + "of";
           location = parts[1];
-        } else if (loc.contains('of ')) {
-          var parts = loc.split('of ');
+        } else if (loc.contains("of ")) {
+          var parts = loc.split("of ");
           locDes = parts[0] + "of";
           location = parts[1];
         } else {
