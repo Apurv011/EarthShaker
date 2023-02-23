@@ -137,6 +137,9 @@ class _EarthQuakeState extends State<EarthQuake> {
   }
 
   Future<void> updateUI() async {
+
+    print("AAAAAAAAAAAAAAAAAAA");
+
     showSpinner = true;
     NetworkHelper networkHelper = NetworkHelper();
 
@@ -144,6 +147,12 @@ class _EarthQuakeState extends State<EarthQuake> {
     var uEmail = prefs.getString("email");
     var uId = prefs.getString("id");
     var uToken = prefs.getString("token");
+
+    print("*****");
+    print(uEmail);
+    print(uId);
+    print(uToken);
+    print("*****");
 
     http.Response response = await http
         .get(FlutterConfig.get('MY_SERVER_URL') + 'user/$uId', headers: {
@@ -156,6 +165,8 @@ class _EarthQuakeState extends State<EarthQuake> {
         isLoggedIn = true;
       });
     }
+
+    print("BBBBBBBBBBBBBBBBBBBBBBBB");
 
     var data;
 
@@ -195,6 +206,8 @@ class _EarthQuakeState extends State<EarthQuake> {
         }
       }
     }
+    print("Data:--------------------------------------------------------------------------");
+    print(data);
     setState(() {
       earthQuakeTiles.clear();
       for (var i = 0; i < data['features'].length; i++) {
@@ -205,8 +218,8 @@ class _EarthQuakeState extends State<EarthQuake> {
 
         url = data['features'][i]['properties']['url'];
 
-        lon = data['features'][i]['geometry']['coordinates'][0];
-        lat = data['features'][i]['geometry']['coordinates'][1];
+        lon = data['features'][i]['geometry']['coordinates'][0].toDouble();
+        lat = data['features'][i]['geometry']['coordinates'][1].toDouble();
 
         DateTime date = new DateTime.fromMillisecondsSinceEpoch(
             data['features'][i]['properties']['time']);
